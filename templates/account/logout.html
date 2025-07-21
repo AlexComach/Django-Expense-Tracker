@@ -1,0 +1,7 @@
+{% extends "expenses/base.html" %}
+    {% block content %}
+        <h4>You have been logged out</h4>
+        <a href="{% url 'account_login' %}">Log In here.</a>   
+        <a href="{% url 'account_signup' %}">Don't have an account? Register here.</a>        
+        </div>
+{% endblock content %}
