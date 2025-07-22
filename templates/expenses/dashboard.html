@@ -86,6 +86,8 @@
         <main class="col-12 col-lg-10 offset-lg-2 px-4 pt-4">
             {% block content %}
                 <h1>DASHBOARD</h1>
+
+                {{ chart|safe}}
             {% endblock %}
         </main>
 

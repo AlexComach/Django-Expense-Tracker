@@ -20,20 +20,20 @@
 
 2. **Create virtual environment**
    ```bash
-        # Create virtual environment
-        python -m venv venv
+    # Create virtual environment
+    python -m venv venv
 
-        # Activate virtual environment
-        # On Windows:
-        myenv\Scripts\activate
+    # Activate virtual environment
+    # On Windows:
+    myenv\Scripts\activate
 
-        # On macOS/Linux:
-        source venv/bin/activate
+    # On macOS/Linux:
+    source venv/bin/activate
    ```
 
 3. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+    pip install -r requirements.txt
    ```
 
 4. **Run migrations**
@@ -51,7 +51,9 @@
 
 - Django
 - SQLite
-- Bootstrap (for styling)
+- HTMX
+- Bootstrap (Flatly theme)
+
 
 ## Status
 
