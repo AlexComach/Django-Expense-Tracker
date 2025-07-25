@@ -49,22 +49,15 @@ class TransactionFilter(django_filters.FilterSet):
         model = Transactions
         fields = [] 
 
-
     @classmethod
-    def get_current_month_data(cls):
-        """Get transactions for the current month"""
+    def get_current_month_expenses(cls, user):
         today = date.today()
-        first_day = today.replace(day=1)
         
-        if today.month == 12:
-            last_day = today.replace(year=today.year + 1, month=1, day=1)
-        else:
-            last_day = today.replace(month=today.month + 1, day=1)
+        queryset = Transactions.objects.select_related('category').filter(
+            user=user, 
+            type='Expense',
+            date__year=today.year,
+            date__month=today.month
+        )
         
-        filter_data = {
-            'start_date': first_day,
-            'end_date': last_day
-        }
-        
-        queryset = Transactions.objects.select_related('category').all()
-        return cls(filter_data, queryset=queryset).qs
+        return cls({}, queryset=queryset).qs

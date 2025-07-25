@@ -10,6 +10,7 @@ import pandas as pd
 from .filters import TransactionFilter
 import calendar
 from django.utils import timezone
+from django.db.models import Sum
 
 cache.clear()
 
@@ -24,7 +25,10 @@ def profile(request):
 
 @login_required
 def dashboard(request):
-    current_month_data = TransactionFilter.get_current_month_data()
+    current_month_data = TransactionFilter.get_current_month_expenses(request.user)
+    
+    print(f"Found {current_month_data.count()} transactions")
+    print("Transaction dates:", list(current_month_data.values_list('date', flat=True)))
     
     df = pd.DataFrame(current_month_data.values('amount', 'category__name'))
     df = df.rename(columns={'category__name': 'category'})
@@ -32,10 +36,30 @@ def dashboard(request):
     now = timezone.now()
     month_name = calendar.month_name[now.month]
     
-    fig = px.pie(df, values='amount', names='category', 
-                title=f'Expenses for {month_name} {now.year}')
-    chart = fig.to_html()
-    context = {'chart': chart}
+    total_spent = current_month_data.aggregate(total=Sum('amount'))['total'] or 0
+    total_earned = 0  
+    budget_remaining = 2000 - total_spent  
+    recent_transactions = Transactions.objects.filter(user=request.user).order_by('-date')[:3]
+    
+    if df.empty:
+        chart = "<p>No transactions found for this month.</p>"
+    else:
+        print("DataFrame:", df)
+        
+        fig = px.pie(df, values='amount', names='category',
+                    title=f'Expenses for {month_name} {now.year}', 
+                    hole=.3)
+        
+        chart = fig.to_html()
+    
+    context = {
+        'chart': chart,
+        'total_spent': total_spent,
+        'total_earned': total_earned,
+        'budget_remaining': budget_remaining,
+        'month_name': month_name,
+        'recent_transactions': recent_transactions, 
+    }
     return render(request, "expenses/dashboard.html", context)
 
 
