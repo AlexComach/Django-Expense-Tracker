@@ -11,16 +11,36 @@ from .filters import TransactionFilter
 import calendar
 from django.utils import timezone
 from django.db.models import Sum
+from django.http import HttpResponse
+from .forms import UserProfileForm 
 
 cache.clear()
 
 def home(request):
     return render(request, "expenses/home.html")
 
-
 @login_required
 def profile(request):
-    return render(request, "expenses/profile.html")
+    user = request.user
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            form = UserProfileForm(instance=user)
+            
+            if request.headers.get('HX-Request'):
+                return render(request, "expenses/_profile_form.html", {"form": form})
+            else:
+                return redirect('profile')
+        else:
+            if request.headers.get('HX-Request'):
+                return render(request, "expenses/_profile_form.html", {"form": form})
+    
+    form = UserProfileForm(instance=user)
+    return render(request, "expenses/profile.html", {"form": form})
+
+
 
 
 @login_required
