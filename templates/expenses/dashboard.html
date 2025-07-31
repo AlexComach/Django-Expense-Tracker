@@ -84,9 +84,18 @@
         </nav>
 
         <div class="col-12 col-lg-10 offset-lg-2 px-3 px-md-4 pt-4 pb-4 d-flex flex-column" style="min-height: calc(100vh - 56px - 1rem);">
-
+        <div class="container-fluid py-4">
             {% block content %}
-            <h1>DASHBOARD</h1>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex align-items-center mb-3">
+                        <div>
+                            <h1 class="mb-0 fw-bold">Dashboard</h1>
+                            <p class="text-muted mb-0">View your recent spending and expense info.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row flex-grow-1">
                 <div class="col-12 col-md-6 mb-4 mb-md-0 d-flex flex-column">
                     <div class="card flex-grow-1">
@@ -168,6 +177,7 @@
                 </div>
             </div>
             {% endblock %}
+        </div>
 
 </div>
 

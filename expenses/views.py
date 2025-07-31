@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
-from .models import Transactions
+from .models import Transactions, UserProfile
 from expenses.filters import TransactionFilter
 from .forms import TransactionForm 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -21,13 +21,13 @@ def home(request):
 
 @login_required
 def profile(request):
-    user = request.user
-    
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=user)
+        form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            form = UserProfileForm(instance=user)
+            form = UserProfileForm(instance=profile)
             
             if request.headers.get('HX-Request'):
                 return render(request, "expenses/_profile_form.html", {"form": form})
@@ -37,7 +37,9 @@ def profile(request):
             if request.headers.get('HX-Request'):
                 return render(request, "expenses/_profile_form.html", {"form": form})
     
-    form = UserProfileForm(instance=user)
+    else:
+        form = UserProfileForm(instance=profile)
+    
     return render(request, "expenses/profile.html", {"form": form})
 
 
