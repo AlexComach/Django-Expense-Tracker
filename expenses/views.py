@@ -113,3 +113,8 @@ def transactions(request):
     }
     return render(request, 'expenses/transactions.html', context)
 
+
+@login_required
+def report(request):
+    return render(request, "expenses/report.html")
+
